@@ -13,7 +13,10 @@ const NonCombatSkill = ({route}) => {
   const {character, setCharacter} = useContext(CharacterContext);
 
   useEffect(() => {
-    if (character?.active_skill?.skill == skill.name) {
+    if (
+      character?.active_skill?.skill == skill.name &&
+      !handleDisabled(character.active_skill.node)
+    ) {
       setSelected(character.active_skill.node);
     }
   }, []);

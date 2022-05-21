@@ -42,7 +42,7 @@ const Skills = ({navigation}) => {
 
   return (
     <SafeAreaView>
-      {modalVisible ? (
+      {modalVisible && modalInfo ? (
         <Modal
           visible={modalVisible}
           animationType="slide"
