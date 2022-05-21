@@ -1,5 +1,5 @@
 import React, {useEffect, useContext, useState} from 'react';
-import {View, Text, Button, Modal, TextInput} from 'react-native';
+import {View, Text, Button, Modal, TextInput, Pressable} from 'react-native';
 
 import {UserContext} from '../contexts/userContext';
 import {CharacterContext} from '../contexts/characterContext';
@@ -53,11 +53,18 @@ const CharacterSelect = ({navigation}) => {
       {characters
         ? characters.map(char => {
             return (
-              <Button
-                title={char.name}
+              <Pressable
                 key={char._id}
-                onPress={() => handleSetCharacter(char)}
-              />
+                onPress={() => handleSetCharacter(char)}>
+                <Text>{char.name}</Text>
+                <Text>
+                  Total Level:{' '}
+                  {Object.keys(char.skills).reduce((totalLevel, skill) => {
+                    return totalLevel + char.skills[skill].lvl;
+                  }, 0)}
+                </Text>
+                <Text>Performing: {char.active_skill.skill}</Text>
+              </Pressable>
             );
           })
         : ''}

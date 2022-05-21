@@ -31,13 +31,16 @@ export const calculateIdleRewards = (character, setCharacter) => {
   const rightNow = Date.now();
   const activeSkill = character.active_skill.skill;
   const activeNode = character.active_skill.node;
-  const timesSkilled = Math.floor((rightNow - character.last_save) / 2000);
+  const interval = activeNode.interval ? activeNode.interval * 1000 : 2000;
+  const timesSkilled = Math.floor((rightNow - character.last_save) / interval);
   let xpGained = 0;
-  const prevLvl = character.skills[activeSkill.name].lvl;
+  const prevLvl = character.skills[activeSkill].lvl;
   const dropsGained = {};
   let charCopy = {...character};
 
   for (let i = 0; i < timesSkilled; i++) {
+    let canContinue = true;
+
     let drops = calculateDrops(activeNode);
     drops.forEach(drop => {
       charCopy.inventory[drop.name] = charCopy.inventory[drop.name]
@@ -50,15 +53,30 @@ export const calculateIdleRewards = (character, setCharacter) => {
     });
 
     xpGained += activeNode.reward / 2;
+
+    if (activeNode.requires?.some(x => x)) {
+      activeNode.requires.every(item => {
+        charCopy.inventory[item.name] -= item.quantity;
+
+        if (charCopy.inventory[item.name] == 0) {
+          canContinue = false;
+          return false;
+        }
+      });
+    }
+
+    if (!canContinue) {
+      break;
+    }
   }
 
-  charCopy.skills[activeSkill.name].xp += xpGained;
+  charCopy.skills[activeSkill].xp += xpGained;
   if (
-    charCopy.skills[activeSkill.name].xp >=
-    100 * Math.pow(charCopy.skills[activeSkill.name].lvl, 2.59)
+    charCopy.skills[activeSkill].xp >=
+    100 * Math.pow(charCopy.skills[activeSkill].lvl, 2.59)
   ) {
-    charCopy.skills[activeSkill.name].lvl = Math.floor(
-      Math.pow(charCopy.skills[activeSkill.name].xp / 100, 0.3861),
+    charCopy.skills[activeSkill].lvl = Math.floor(
+      Math.pow(charCopy.skills[activeSkill].xp / 100, 0.3861),
     );
   }
 
@@ -70,7 +88,7 @@ export const calculateIdleRewards = (character, setCharacter) => {
     timesSkilled,
     xpGained,
     prevLvl,
-    lvl: character.skills[activeSkill.name].lvl,
+    lvl: character.skills[activeSkill].lvl,
     dropsGained,
   };
 };
@@ -83,6 +101,8 @@ export const calculateDrops = node => {
       }
     });
   }
+
+  return [];
 };
 
 export const addDrops = (character, setCharacter, drops) => {
@@ -125,6 +145,18 @@ export const executeNonCombatSkill = (
   selectedNode,
 ) => {
   let charCopy = {...character};
+  let canContinue = true;
+
+  if (selectedNode.requires?.some(x => x)) {
+    selectedNode.requires.every(item => {
+      charCopy.inventory[item.name] -= item.quantity;
+
+      if (charCopy.inventory[item.name] == 0) {
+        canContinue = false;
+        return false;
+      }
+    });
+  }
 
   let drops = calculateDrops(selectedNode);
   drops.forEach(drop => {
@@ -144,4 +176,6 @@ export const executeNonCombatSkill = (
   }
 
   setCharacter(charCopy);
+
+  return canContinue;
 };

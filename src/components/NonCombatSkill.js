@@ -13,54 +13,54 @@ const NonCombatSkill = ({route}) => {
   const {character, setCharacter} = useContext(CharacterContext);
 
   useEffect(() => {
-    if (character?.active_skill?.skill?.name == skill.name) {
+    if (character?.active_skill?.skill == skill.name) {
       setSelected(character.active_skill.node);
     }
   }, []);
 
   const handleSkillShotAction = mod => {
-    executeNonCombatSkill(
-      character,
-      setCharacter,
-      skill.name,
-      selected.reward - (mod / 100) * 2,
-      selected,
-    );
-    // handleItemConsumption();
+    if (
+      !executeNonCombatSkill(
+        character,
+        setCharacter,
+        skill.name,
+        selected.reward - (mod / 100) * 2,
+        selected,
+      )
+    ) {
+      setSelected(prev => {});
+      setCharacter(prevState => ({
+        ...prevState,
+        active_skill: {},
+      }));
+    }
   };
 
   const handleIdleAction = () => {
-    executeNonCombatSkill(
-      character,
-      setCharacter,
-      skill.name,
-      selected.reward / 2,
-      selected,
-    );
-    // handleItemConsumption();
+    if (
+      !executeNonCombatSkill(
+        character,
+        setCharacter,
+        skill.name,
+        selected.reward / 2,
+        selected,
+      )
+    ) {
+      setSelected(prev => {});
+      setCharacter(prevState => ({
+        ...prevState,
+        active_skill: {},
+      }));
+    }
   };
 
   const handleNodeSelect = node => {
-    setSelected(node);
-    setCharacter({...character, active_skill: {skill, node}});
+    setSelected(prev => node);
+    setCharacter(prevState => ({
+      ...prevState,
+      active_skill: {skill: skill.name, node},
+    }));
   };
-
-  // const handleItemConsumption = () => {
-  //   if (selected.requires?.some(x => x)) {
-  //     let invCopy = character.inventory;
-
-  //     selected.requires.every(item => {
-  //       invCopy[item.name] -= item.quantity;
-
-  //       if (invCopy[item.name] == 0) {
-  //         setSelected({});
-  //         return false;
-  //       }
-  //     });
-
-  //     setCharacter(prevChar => ({...prevChar, inventory: invCopy}));
-  //   }
-  // };
 
   const handleDisabled = node => {
     if (node.requires?.some(x => x)) {
@@ -71,7 +71,7 @@ const NonCombatSkill = ({route}) => {
         );
       });
 
-      return presentItems.length == node.requires.length;
+      return presentItems.length !== node.requires.length;
     }
 
     return false;
@@ -101,8 +101,15 @@ const NonCombatSkill = ({route}) => {
       <View>
         {selected ? (
           <>
-            <IdleSkillBar action={handleIdleAction} />
-            <SkillShotV2 action={handleSkillShotAction} />
+            <IdleSkillBar
+              key={selected.type}
+              action={handleIdleAction}
+              interval={selected.interval ? selected.interval * 1000 : 2000}
+            />
+            <SkillShotV2
+              key={selected.type + 'skillShot'}
+              action={handleSkillShotAction}
+            />
           </>
         ) : null}
       </View>

@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from 'react';
-import {StyleSheet, View, Animated, BackHandler} from 'react-native';
+import {StyleSheet, View, Animated} from 'react-native';
 
 const IdleSkillBar = props => {
   const overallWidth = props.container?.overallWidth || 400;
