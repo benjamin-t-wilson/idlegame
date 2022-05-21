@@ -35,7 +35,7 @@ export const calculateIdleRewards = (character, setCharacter) => {
   let xpGained = 0;
   const prevLvl = character.skills[activeSkill.name].lvl;
   const dropsGained = {};
-  let charCopy = character;
+  let charCopy = {...character};
 
   for (let i = 0; i < timesSkilled; i++) {
     let drops = calculateDrops(activeNode);
@@ -124,6 +124,24 @@ export const executeNonCombatSkill = (
   expGain,
   selectedNode,
 ) => {
-  increaseSkillXp(character, setCharacter, skill, expGain);
-  calculateAndAddDrops(character, setCharacter, selectedNode);
+  let charCopy = {...character};
+
+  let drops = calculateDrops(selectedNode);
+  drops.forEach(drop => {
+    charCopy.inventory[drop.name] = charCopy.inventory[drop.name]
+      ? (charCopy.inventory[drop.name] += drop.quantity)
+      : drop.quantity;
+  });
+
+  charCopy.skills[skill].xp += Math.floor(expGain);
+  if (
+    charCopy.skills[skill].xp >=
+    100 * Math.pow(charCopy.skills[skill].lvl, 2.59)
+  ) {
+    charCopy.skills[skill].lvl = Math.floor(
+      Math.pow(charCopy.skills[skill].xp / 100, 0.3861),
+    );
+  }
+
+  setCharacter(charCopy);
 };
