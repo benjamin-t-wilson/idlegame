@@ -70,7 +70,7 @@ const NonCombatSkill = ({route}) => {
       const presentItems = node.requires.filter(item => {
         return (
           character.inventory[item.name] &&
-          character.inventory[item.name] >= item.quantity
+          character.inventory[item.name].quantity >= item.quantity
         );
       });
 

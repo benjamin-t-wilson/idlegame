@@ -48,8 +48,12 @@ export const calculateIdleRewards = (character, setCharacter) => {
       let drops = calculateDrops(activeNode);
       drops.forEach(drop => {
         charCopy.inventory[drop.name] = charCopy.inventory[drop.name]
-          ? (charCopy.inventory[drop.name] += drop.quantity)
-          : drop.quantity;
+          ? {
+              ...charCopy.inventory[drop.name],
+              quantity: (charCopy.inventory[drop.name].quantity +=
+                drop.quantity),
+            }
+          : {quantity: drop.quantity, item_id: drop.item_id};
 
         dropsGained[drop.name] = dropsGained[drop.name]
           ? (dropsGained[drop.name] += drop.quantity)
@@ -60,10 +64,10 @@ export const calculateIdleRewards = (character, setCharacter) => {
 
       if (activeNode.requires?.some(x => x)) {
         activeNode.requires.every(item => {
-          charCopy.inventory[item.name] -= item.quantity;
+          charCopy.inventory[item.name].quantity -= item.quantity;
 
-          if (charCopy.inventory[item.name] <= 0) {
-            charCopy.inventory[item.name] = 0;
+          if (charCopy.inventory[item.name].quantity <= 0) {
+            charCopy.inventory[item.name].quantity = 0;
             canContinue = false;
             return false;
           }
@@ -119,8 +123,11 @@ export const addDrops = (character, setCharacter, drops) => {
 
   drops.forEach(drop => {
     invCopy[drop.name] = invCopy[drop.name]
-      ? (invCopy[drop.name] += drop.quantity)
-      : drop.quantity;
+      ? {
+          ...invCopy[drop.name],
+          quantity: (invCopy[drop.name].quantity += drop.quantity),
+        }
+      : {quantity: drop.quantity, item_id: drop.item_id};
   });
 
   setCharacter(prevChar => ({...prevChar, inventory: invCopy}));
@@ -138,8 +145,11 @@ export const calculateAndAddDrops = (character, setCharacter, node) => {
 
     drops.forEach(drop => {
       invCopy[drop.name] = invCopy[drop.name]
-        ? (invCopy[drop.name] += drop.quantity)
-        : drop.quantity;
+        ? {
+            ...invCopy[drop.name],
+            quantity: (invCopy[drop.name].quantity += drop.quantity),
+          }
+        : {quantity: drop.quantity, item_id: drop.item_id};
     });
 
     setCharacter(prevChar => ({...prevChar, inventory: invCopy}));
@@ -158,10 +168,10 @@ export const executeNonCombatSkill = (
 
   if (selectedNode.requires?.some(x => x)) {
     selectedNode.requires.every(item => {
-      charCopy.inventory[item.name] -= item.quantity;
+      charCopy.inventory[item.name].quantity -= item.quantity;
 
-      if (charCopy.inventory[item.name] <= 0) {
-        charCopy.inventory[item.name] = 0;
+      if (charCopy.inventory[item.name].quantity <= 0) {
+        charCopy.inventory[item.name].quantity = 0;
         canContinue = false;
         return false;
       }
@@ -172,8 +182,11 @@ export const executeNonCombatSkill = (
   let drops = calculateDrops(selectedNode);
   drops.forEach(drop => {
     charCopy.inventory[drop.name] = charCopy.inventory[drop.name]
-      ? (charCopy.inventory[drop.name] += drop.quantity)
-      : drop.quantity;
+      ? {
+          ...charCopy.inventory[drop.name],
+          quantity: (charCopy.inventory[drop.name].quantity += drop.quantity),
+        }
+      : {quantity: drop.quantity, item_id: drop.item_id};
   });
 
   charCopy.skills[skill].xp += Math.floor(expGain);
