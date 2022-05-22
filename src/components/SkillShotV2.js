@@ -36,6 +36,11 @@ const SkillShotV2 = props => {
         resetAnim(timing);
       }
     });
+
+    return () => {
+      timing.stop();
+      slideAnimation.stopAnimation();
+    };
   }, [slideAnimation]);
 
   const styles = StyleSheet.create({
