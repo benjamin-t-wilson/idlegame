@@ -13,7 +13,7 @@ export const postRegister = async info => {
     }),
   });
 
-  const userId = await response.json();
+  const {userId} = await response.json();
 
   return userId && response.ok ? userId : null;
 };
@@ -29,7 +29,7 @@ export const postLogin = async creds => {
       }),
     });
 
-    const userId = await response.json();
+    const {userId} = await response.json();
 
     return userId && response.ok ? userId : null;
   } catch (err) {

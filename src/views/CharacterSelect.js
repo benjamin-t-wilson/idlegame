@@ -7,6 +7,7 @@ import {
   getAllCharactersForUser,
   postCharacter,
 } from '../adapters/charactersAdapter';
+import CharacterTile from '../components/CharacterTile';
 
 const CharacterSelect = ({navigation}) => {
   const {userId} = useContext(UserContext);
@@ -24,14 +25,10 @@ const CharacterSelect = ({navigation}) => {
     }
   }, []);
 
-  const handleSetCharacter = char => {
-    setCharacter(char);
-    navigation.navigate('Skills');
-  };
-
   const handleCreateCharacter = async () => {
     const char = await postCharacter(userId, newCharName);
-    handleSetCharacter(char);
+    setCharacter(char);
+    navigation.navigate('Skills');
   };
 
   return (
@@ -53,18 +50,11 @@ const CharacterSelect = ({navigation}) => {
       {characters
         ? characters.map(char => {
             return (
-              <Pressable
+              <CharacterTile
+                character={char}
+                navigation={navigation}
                 key={char._id}
-                onPress={() => handleSetCharacter(char)}>
-                <Text>{char.name}</Text>
-                <Text>
-                  Total Level:{' '}
-                  {Object.keys(char.skills).reduce((totalLevel, skill) => {
-                    return totalLevel + char.skills[skill].lvl;
-                  }, 0)}
-                </Text>
-                <Text>Performing: {char.active_skill.skill}</Text>
-              </Pressable>
+              />
             );
           })
         : ''}

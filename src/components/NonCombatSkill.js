@@ -3,16 +3,23 @@ import {SafeAreaView, Text, Button, View} from 'react-native';
 
 import {executeNonCombatSkill} from '../services/actionService';
 import {CharacterContext} from '../contexts/characterContext';
+import {getSkill} from '../adapters/skillsAdapter';
 
 import SkillShotV2 from './SkillShotV2';
 import IdleSkillBar from './IdleSkillBar';
 
 const NonCombatSkill = ({route}) => {
-  const skill = route.params.skill;
+  const [skill, setSkill] = useState(route.params.skill);
   const [selected, setSelected] = useState(null);
   const {character, setCharacter} = useContext(CharacterContext);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    getSkill(skill._id).then(res => {
+      setSkill(prev => ({...prev, milestones: res}));
+      setLoading(false);
+    });
+
     if (
       character?.active_skill?.skill == skill.name &&
       !handleDisabled(character.active_skill.node)
@@ -82,40 +89,44 @@ const NonCombatSkill = ({route}) => {
 
   return (
     <SafeAreaView>
-      <View>
-        <Text>{skill.name}</Text>
-        <Text>Level: {character.skills[skill.name].lvl}</Text>
-        <Text>Total EXP: {character.skills[skill.name].xp}</Text>
-      </View>
-      <View>
-        {skill.milestones
-          .filter(node => character.skills[skill.name].lvl >= node.lvl)
-          .map(node => {
-            return (
-              <Button
-                title={node.type}
-                onPress={() => handleNodeSelect(node)}
-                key={node.type}
-                disabled={handleDisabled(node)}
-              />
-            );
-          })}
-      </View>
-      <View>
-        {selected ? (
-          <>
-            <IdleSkillBar
-              key={selected.type}
-              action={handleIdleAction}
-              interval={selected.interval ? selected.interval * 1000 : 2000}
-            />
-            <SkillShotV2
-              key={selected.type + 'skillShot'}
-              action={handleSkillShotAction}
-            />
-          </>
-        ) : null}
-      </View>
+      {loading ? null : (
+        <>
+          <View>
+            <Text>{skill.name}</Text>
+            <Text>Level: {character.skills[skill.name].lvl}</Text>
+            <Text>Total EXP: {character.skills[skill.name].xp}</Text>
+          </View>
+          <View>
+            {skill.milestones
+              .filter(node => character.skills[skill.name].lvl >= node.lvl)
+              .map(node => {
+                return (
+                  <Button
+                    title={node.type}
+                    onPress={() => handleNodeSelect(node)}
+                    key={node.type}
+                    disabled={handleDisabled(node)}
+                  />
+                );
+              })}
+          </View>
+          <View>
+            {selected ? (
+              <>
+                <IdleSkillBar
+                  key={selected.type}
+                  action={handleIdleAction}
+                  interval={selected.interval ? selected.interval * 1000 : 2000}
+                />
+                <SkillShotV2
+                  key={selected.type + 'skillShot'}
+                  action={handleSkillShotAction}
+                />
+              </>
+            ) : null}
+          </View>
+        </>
+      )}
     </SafeAreaView>
   );
 };

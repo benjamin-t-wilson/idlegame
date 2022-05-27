@@ -7,11 +7,11 @@ export const getAllCharactersForUser = async id => {
   return characters;
 };
 
-export const getCharacter = async id => {
-  const response = await fetch(`${API_URL}/characters/single/${id}`);
-  const character = await response.json();
+export const getCharacterInfo = async id => {
+  const response = await fetch(`${API_URL}/characters/information/${id}`);
+  const characterInfo = await response.json();
 
-  return character;
+  return characterInfo;
 };
 
 export const postCharacter = async (userId, name) => {
