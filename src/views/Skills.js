@@ -5,6 +5,7 @@ import {getAllSkills} from '../adapters/skillsAdapter.js';
 import {CharacterContext} from '../contexts/characterContext.js';
 import {calculateIdleRewards} from '../services/actionService';
 import {postSaveCharacter} from '../adapters/charactersAdapter';
+import IdleRewardsModal from '../components/IdleRewardsModal.js';
 
 const Skills = ({navigation}) => {
   const {character, setCharacter} = useContext(CharacterContext);
@@ -21,8 +22,8 @@ const Skills = ({navigation}) => {
       character.active_skill &&
       character.last_save
     ) {
-      setIdleXpComplete(true);
       handleIdleRewards();
+      setIdleXpComplete(true);
       postSaveCharacter(character);
     }
 
@@ -43,46 +44,12 @@ const Skills = ({navigation}) => {
   return (
     <SafeAreaView>
       {modalVisible && modalInfo ? (
-        <Modal
-          visible={modalVisible}
-          animationType="slide"
-          onRequestClose={() => setModalVisible(false)}>
-          <View>
-            <Text>Hi {character.name}</Text>
-            <Text>Since you been gone:</Text>
-            <View>
-              <Text>
-                You performed action: {modalInfo.activeSkillName || ''} -{' '}
-                {modalInfo.activeNodeType || ''} a total of{' '}
-                {modalInfo.timesSkilled || ''} times.
-              </Text>
-              <Text>
-                You gained {modalInfo.xpGained || ''}{' '}
-                {modalInfo.activeSkillName || ''} experience.
-              </Text>
-              {modalInfo.prevLvl < modalInfo.lvl ? (
-                <Text>
-                  That brings you from level {modalInfo.prevLvl || ''} to{' '}
-                  {modalInfo.lvl || ''}
-                </Text>
-              ) : null}
-              {modalInfo.dropsGained &&
-              Object.keys(modalInfo.dropsGained).length > 0 ? (
-                <View>
-                  <Text>You gained the following drops:</Text>
-                  {Object.keys(modalInfo.dropsGained).map(drop => {
-                    return (
-                      <Text key={drop}>
-                        {modalInfo.dropsGained[drop]}x {drop}
-                      </Text>
-                    );
-                  })}
-                </View>
-              ) : null}
-            </View>
-            <Button title="Close" onPress={() => setModalVisible(false)} />
-          </View>
-        </Modal>
+        <IdleRewardsModal
+          modalInfo={modalInfo}
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+          charName={character.name}
+        />
       ) : null}
       {skills.map(skill => {
         return (
