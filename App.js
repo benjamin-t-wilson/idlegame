@@ -25,7 +25,7 @@ import {jsErrorHandler} from './src/services/errorService.js';
 
 setJSExceptionHandler(jsErrorHandler, true);
 
-const App = props => {
+const App = () => {
   const Stack = createNativeStackNavigator();
   const [userId, setUserId] = useState('');
   const [character, setCharacter] = useState({});
@@ -54,7 +54,7 @@ const App = props => {
             </Stack.Screen>
             <Stack.Screen
               name="NonCombatSkill"
-              options={({route, navigation}) => ({
+              options={({route}) => ({
                 title: route.params.skill.name,
               })}>
               {props => <NonCombatSkill {...props} />}

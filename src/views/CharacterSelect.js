@@ -1,5 +1,5 @@
 import React, {useEffect, useContext, useState} from 'react';
-import {View, Text, Button, Modal, TextInput, Pressable} from 'react-native';
+import {View, Text, Button, Modal, TextInput} from 'react-native';
 
 import {UserContext} from '../contexts/userContext';
 import {CharacterContext} from '../contexts/characterContext';

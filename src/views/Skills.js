@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useContext} from 'react';
-import {SafeAreaView, Button, Modal, Text, View} from 'react-native';
+import {SafeAreaView, Button} from 'react-native';
 
 import {getAllSkills} from '../adapters/skillsAdapter.js';
 import {CharacterContext} from '../contexts/characterContext.js';

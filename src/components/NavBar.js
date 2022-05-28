@@ -8,22 +8,8 @@ import {CharacterContext} from '../contexts/characterContext';
 const NavBar = () => {
   const {character} = useContext(CharacterContext);
   const route = useRoute();
-  //   const appState = useRef(AppState.currentState);
 
   const noShowScreens = ['Login', 'Register', 'CharacterSelect'];
-
-  //   useEffect(() => {
-  //     const subscription = AppState.addEventListener('change', nextAppState => {
-  //       if (nextAppState !== 'active') {
-  //         postSaveCharacter(character);
-  //       }
-  //       appState.current = nextAppState;
-  //     });
-
-  //     return () => {
-  //       subscription.remove();
-  //     };
-  //   }, []);
 
   return (
     <>
