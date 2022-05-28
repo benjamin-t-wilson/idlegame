@@ -1,6 +1,7 @@
 import React, {useState, useRef, useEffect} from 'react';
+import {View, Pressable, Animated, Text} from 'react-native';
 
-import {StyleSheet, View, Button, Animated} from 'react-native';
+import styles from '../styles/components/SkillShotV2.Styles';
 
 const SkillShotV2 = props => {
   const [disabled, setDisabled] = useState(false);
@@ -21,7 +22,7 @@ const SkillShotV2 = props => {
   useEffect(() => {
     const timing = Animated.sequence([
       Animated.timing(slideAnimation, {
-        toValue: overallWidth - (props.slider?.width || overallHeight / 2),
+        toValue: overallWidth - (props.slider?.width || overallHeight / 2) - 40,
         duration: interval,
         useNativeDriver: false,
       }),
@@ -42,34 +43,6 @@ const SkillShotV2 = props => {
       slideAnimation.stopAnimation();
     };
   }, [slideAnimation]);
-
-  const styles = StyleSheet.create({
-    containerStyles: {
-      width: overallWidth,
-      height: overallHeight,
-      display: 'flex',
-    },
-    mainBarStyles: {
-      width: '100%',
-      height: '100%',
-      backgroundColor: props.mainBar?.background || 'lightgray',
-    },
-    sweetSpotStyles: {
-      width: props.sweetSpot?.width || overallHeight,
-      height: props.sweetSpot?.height || overallHeight,
-      backgroundColor: props.sweetSpot?.background || 'lightgreen',
-      position: 'absolute',
-      left: overallWidth / 2 - overallHeight / 2,
-    },
-    sliderStyles: {
-      width: props.slider?.width || overallHeight / 2,
-      height: props.slider?.height || overallHeight,
-      backgroundColor: props.slider?.background || 'red',
-      opacity: props.slider?.opacity || 0.5,
-      position: 'absolute',
-      left: slideAnimation,
-    },
-  });
 
   const execute = () => {
     setDisabled(true);
@@ -101,20 +74,39 @@ const SkillShotV2 = props => {
   };
 
   return (
-    <View>
-      <View style={styles.containerStyles}>
-        <View style={styles.mainBarStyles}></View>
-        <View ref={sweetSpotRef} style={styles.sweetSpotStyles}></View>
+    <View style={{...styles.container, marginTop: 20}}>
+      <View
+        style={{
+          ...styles.container,
+          width: overallWidth - 40,
+          height: overallHeight,
+        }}>
+        <View style={styles.mainBar}></View>
+        <View
+          ref={sweetSpotRef}
+          style={{
+            ...styles.sweetSpot,
+            width: props.sweetSpot?.width || overallHeight,
+            height: overallHeight,
+            left: overallWidth / 2 - overallHeight / 2 - 20,
+          }}></View>
         <Animated.View
           ref={sliderRef}
-          style={styles.sliderStyles}></Animated.View>
+          style={{
+            ...styles.slider,
+            width: props.slider?.width || overallHeight / 2,
+            height: props.slider?.height || overallHeight,
+            left: slideAnimation,
+          }}></Animated.View>
       </View>
-      <Button
+      <Pressable
+        style={
+          props.disabled || disabled ? styles.buttonDisabled : styles.buttonAccent
+        }
         disabled={props.disabled || disabled}
-        title="smash"
         onPress={execute}>
-        smash
-      </Button>
+        <Text style={styles.text}>Perform Action</Text>
+      </Pressable>
     </View>
   );
 };

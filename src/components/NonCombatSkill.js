@@ -1,5 +1,5 @@
 import React, {useState, useContext, useEffect} from 'react';
-import {SafeAreaView, Text, Button, View} from 'react-native';
+import {Text, Pressable, View, ScrollView} from 'react-native';
 
 import {executeNonCombatSkill} from '../services/actionService';
 import {CharacterContext} from '../contexts/characterContext';
@@ -7,6 +7,8 @@ import {getSkill} from '../adapters/skillsAdapter';
 
 import SkillShotV2 from './SkillShotV2';
 import IdleSkillBar from './IdleSkillBar';
+
+import styles from '../styles/views/NonCombatSkill.Styles';
 
 const NonCombatSkill = ({route}) => {
   const [skill, setSkill] = useState(route.params.skill);
@@ -88,31 +90,41 @@ const NonCombatSkill = ({route}) => {
   };
 
   return (
-    <SafeAreaView>
+    <ScrollView style={styles.container}>
       {loading ? null : (
         <>
-          <View>
-            <Text>{skill.name}</Text>
-            <Text>Level: {character.skills[skill.name].lvl}</Text>
-            <Text>Total EXP: {character.skills[skill.name].xp}</Text>
+          <View style={styles.subContainer}>
+            <Text style={styles.title}>{skill.name}</Text>
+            <Text style={styles.text}>
+              Level: {character.skills[skill.name].lvl}
+            </Text>
+            <Text style={{...styles.text, marginTop: 10}}>
+              Total EXP: {character.skills[skill.name].xp}
+            </Text>
           </View>
-          <View>
+          <View style={{...styles.subContainer, alignItems: 'center'}}>
             {skill.milestones
               .filter(node => character.skills[skill.name].lvl >= node.lvl)
-              .map(node => {
+              .map((node, idx) => {
                 return (
-                  <Button
-                    title={node.type}
+                  <Pressable
+                    style={
+                      idx % 2 === 0 ? styles.buttonAccent : styles.buttonDark
+                    }
                     onPress={() => handleNodeSelect(node)}
                     key={node.type}
-                    disabled={handleDisabled(node)}
-                  />
+                    disabled={handleDisabled(node)}>
+                    <Text style={styles.text}>{node.type}</Text>
+                  </Pressable>
                 );
               })}
           </View>
-          <View>
+          <View style={{...styles.subContainer, alignItems: 'center'}}>
             {selected ? (
               <>
+                <Text style={styles.text}>
+                  {skill.name} {selected.type}
+                </Text>
                 <IdleSkillBar
                   key={selected.type}
                   action={handleIdleAction}
@@ -127,7 +139,7 @@ const NonCombatSkill = ({route}) => {
           </View>
         </>
       )}
-    </SafeAreaView>
+    </ScrollView>
   );
 };
 

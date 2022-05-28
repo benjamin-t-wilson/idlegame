@@ -1,5 +1,7 @@
 import React, {useEffect, useRef} from 'react';
-import {StyleSheet, View, Animated} from 'react-native';
+import {View, Animated} from 'react-native';
+
+import styles from '../styles/components/IdleSkillBar.Styles';
 
 const IdleSkillBar = props => {
   const overallWidth = props.container?.overallWidth || 400;
@@ -11,7 +13,7 @@ const IdleSkillBar = props => {
   const animate = () => {
     Animated.sequence([
       Animated.timing(fillAnimation, {
-        toValue: overallWidth,
+        toValue: overallWidth - 25,
         duration: interval,
         useNativeDriver: false,
       }),
@@ -30,32 +32,21 @@ const IdleSkillBar = props => {
 
   useEffect(() => {
     animate();
+    return () => {
+      fillAnimation.stopAnimation();
+    };
   }, []);
 
-  const styles = StyleSheet.create({
-    containerStyles: {
-      width: overallWidth,
-      height: overallHeight,
-      display: 'flex',
-      marginVertical: 20,
-    },
-    mainBarStyles: {
-      width: '100%',
-      height: '100%',
-      backgroundColor: props.mainBar?.background || 'lightgray',
-    },
-    progressBarStyles: {
-      backgroundColor: 'green',
-      width: fillAnimation,
-      height: overallHeight,
-      position: 'absolute',
-    },
-  });
-
   return (
-    <View style={styles.containerStyles}>
-      <View style={styles.mainBarStyles}></View>
-      <Animated.View style={styles.progressBarStyles}></Animated.View>
+    <View
+      style={{...styles.container, width: overallWidth, height: overallHeight}}>
+      <View style={styles.mainBar}></View>
+      <Animated.View
+        style={{
+          ...styles.progressBar,
+          width: fillAnimation,
+          height: overallHeight,
+        }}></Animated.View>
     </View>
   );
 };

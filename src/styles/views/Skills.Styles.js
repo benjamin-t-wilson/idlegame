@@ -2,15 +2,10 @@ import {StyleSheet} from 'react-native';
 import {theme, buttonCommon, textCommon, containerCommon} from '../theme.js';
 
 export default StyleSheet.create({
-  container: {
-    ...containerCommon,
-    backgroundColor: theme.background.light,
-    flex: 0,
-    padding: 20,
-    borderRadius: 15,
-    elevation: 5,
-    marginTop: 20,
-    width: '80%',
+  container: {...containerCommon, justifyContent: 'flex-start'},
+  buttonDark: {
+    backgroundColor: theme.background.dark,
+    ...buttonCommon,
   },
   text: textCommon,
   buttonAccent: {

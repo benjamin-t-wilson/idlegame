@@ -28,7 +28,6 @@ export const increaseSkillXp = (character, setCharacter, skill, amount) => {
 };
 
 export const calculateIdleRewards = (character, setCharacter) => {
-  console.log(character)
   const rightNow = Date.now();
   const activeSkill = character.active_skill.skill;
   const activeNode = character.active_skill.node;
@@ -96,7 +95,7 @@ export const calculateIdleRewards = (character, setCharacter) => {
     setCharacter(charCopy);
 
     return {
-      activeSkillName: activeSkill.name,
+      activeSkillName: activeSkill,
       activeNodeType: activeNode.type,
       timesSkilled,
       xpGained,

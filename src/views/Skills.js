@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useContext} from 'react';
-import {SafeAreaView, Button} from 'react-native';
+import {View, Pressable, Text} from 'react-native';
 
 import {getAllSkills} from '../adapters/skillsAdapter.js';
 import {CharacterContext} from '../contexts/characterContext.js';
@@ -9,6 +9,8 @@ import {
   postSaveCharacter,
 } from '../adapters/charactersAdapter';
 import IdleRewardsModal from '../components/IdleRewardsModal.js';
+
+import styles from '../styles/views/Skills.Styles';
 
 const Skills = ({navigation}) => {
   const {character, setCharacter} = useContext(CharacterContext);
@@ -59,7 +61,7 @@ const Skills = ({navigation}) => {
   };
 
   return (
-    <SafeAreaView>
+    <View style={styles.container}>
       {modalVisible && modalInfo ? (
         <IdleRewardsModal
           modalInfo={modalInfo}
@@ -68,20 +70,22 @@ const Skills = ({navigation}) => {
           charName={character.name}
         />
       ) : null}
-      {skills.map(skill => {
+      <Text style={{...styles.text, marginTop: 20}}>Select a skill:</Text>
+      {skills.map((skill, idx) => {
         return (
-          <Button
-            title={skill.name}
+          <Pressable
+            style={idx % 2 === 0 ? styles.buttonAccent : styles.buttonDark}
             key={skill.name}
             onPress={() =>
               navigation.navigate('NonCombatSkill', {
                 skill: skill,
               })
-            }
-          />
+            }>
+            <Text style={styles.text}>{skill.name}</Text>
+          </Pressable>
         );
       })}
-    </SafeAreaView>
+    </View>
   );
 };
 
