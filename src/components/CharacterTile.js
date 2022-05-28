@@ -22,8 +22,8 @@ const CharacterTile = ({character, navigation}) => {
     }
   };
 
-  const handleSetCharacter = () => {
-    setCharacter({...character, ...charInfo});
+  const handleSetCharacter = async () => {
+    await setCharacter(prev => ({...character, ...charInfo}));
     navigation.navigate('Skills');
   };
 
@@ -51,7 +51,7 @@ const CharacterTile = ({character, navigation}) => {
           ) : null}
           <Pressable
             style={styles.buttonAccent}
-            onPress={() => handleSetCharacter()}>
+            onPress={async () => await handleSetCharacter()}>
             <Text style={styles.text}>Play</Text>
           </Pressable>
         </>

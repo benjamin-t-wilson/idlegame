@@ -4,7 +4,10 @@ import {SafeAreaView, Button} from 'react-native';
 import {getAllSkills} from '../adapters/skillsAdapter.js';
 import {CharacterContext} from '../contexts/characterContext.js';
 import {calculateIdleRewards} from '../services/actionService';
-import {postSaveCharacter} from '../adapters/charactersAdapter';
+import {
+  getCharacterInfo,
+  postSaveCharacter,
+} from '../adapters/charactersAdapter';
 import IdleRewardsModal from '../components/IdleRewardsModal.js';
 
 const Skills = ({navigation}) => {
@@ -24,13 +27,27 @@ const Skills = ({navigation}) => {
     ) {
       handleIdleRewards();
       setIdleXpComplete(true);
-      postSaveCharacter(character);
+      (async () => {
+        await handleSave();
+      })();
     }
 
     if (!skills.length > 0) {
       getAllSkills().then(res => setSkills(res));
     }
   }, []);
+
+  const handleSave = async () => {
+    const save = await postSaveCharacter(character);
+    const charInfo = await getCharacterInfo(character._id);
+    await setCharacter(prev => ({
+      _id: prev._id,
+      name: prev.name,
+      last_save: prev.last_save,
+      user_id: prev.user_id,
+      ...charInfo,
+    }));
+  };
 
   const handleIdleRewards = () => {
     const rightNow = Date.now();
