@@ -1,8 +1,10 @@
 import React, {useState} from 'react';
-import {View, Text, TextInput, Button} from 'react-native';
+import {View, Text, TextInput, Pressable} from 'react-native';
 
 import {postRegister} from '../adapters/usersAdapter';
 import {setUserId} from '../contexts/userContext';
+
+import styles from '../styles/views/Register.Styles';
 
 const Register = ({navigation}) => {
   const [password, onChangePassword] = useState('');
@@ -19,14 +21,31 @@ const Register = ({navigation}) => {
   };
 
   return (
-    <View>
-      <Text>Email:</Text>
-      <TextInput value={email} onChangeText={onChangeEmail} />
-      <Text>Username:</Text>
-      <TextInput value={username} onChangeText={onChangeUsername} />
-      <Text>Password</Text>
-      <TextInput value={password} onChangeText={onChangePassword} />
-      <Button title="Register" onPress={async () => await handleRegister()} />
+    <View style={styles.container}>
+      <Text style={styles.text}>Email:</Text>
+      <TextInput
+        style={styles.input}
+        value={email}
+        onChangeText={onChangeEmail}
+      />
+      <Text style={{...styles.text, marginTop: 40}}>Username:</Text>
+      <TextInput
+        style={styles.input}
+        value={username}
+        onChangeText={onChangeUsername}
+      />
+      <Text style={{...styles.text, marginTop: 40}}>Password</Text>
+      <TextInput
+        style={styles.input}
+        secureTextEntry={true}
+        value={password}
+        onChangeText={onChangePassword}
+      />
+      <Pressable
+        style={styles.buttonAccent}
+        onPress={async () => await handleRegister()}>
+        <Text style={styles.text}>Register</Text>
+      </Pressable>
     </View>
   );
 };

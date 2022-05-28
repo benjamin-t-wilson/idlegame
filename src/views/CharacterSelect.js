@@ -1,5 +1,5 @@
 import React, {useEffect, useContext, useState} from 'react';
-import {View, Text, Button, Modal, TextInput} from 'react-native';
+import {View, Text, Pressable, Modal, TextInput} from 'react-native';
 
 import {UserContext} from '../contexts/userContext';
 import {CharacterContext} from '../contexts/characterContext';
@@ -8,6 +8,8 @@ import {
   postCharacter,
 } from '../adapters/charactersAdapter';
 import CharacterTile from '../components/CharacterTile';
+
+import styles from '../styles/views/CharacterSelect.Styles';
 
 const CharacterSelect = ({navigation}) => {
   const {userId} = useContext(UserContext);
@@ -32,21 +34,26 @@ const CharacterSelect = ({navigation}) => {
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       <Modal
         visible={modalVisible}
         animationType="slide"
         onRequestClose={() => setModalVisible(false)}>
-        <View>
-          <Text>Character name:</Text>
-          <TextInput value={newCharName} onChangeText={onChangeNewCharName} />
-          <Button
-            title="Create Character"
-            onPress={() => handleCreateCharacter()}
+        <View style={styles.container}>
+          <Text style={styles.text}>Character name:</Text>
+          <TextInput
+            style={styles.input}
+            value={newCharName}
+            onChangeText={onChangeNewCharName}
           />
+          <Pressable
+            style={styles.buttonAccent}
+            onPress={() => handleCreateCharacter()}>
+            <Text style={styles.text}>Create Character</Text>
+          </Pressable>
         </View>
       </Modal>
-      <Text>Select your character:</Text>
+      <Text style={styles.text}>Select your character:</Text>
       {characters
         ? characters.map(char => {
             return (
@@ -58,7 +65,11 @@ const CharacterSelect = ({navigation}) => {
             );
           })
         : ''}
-      <Button title="+ New Character" onPress={() => setModalVisible(true)} />
+      <Pressable
+        style={styles.buttonDark}
+        onPress={() => setModalVisible(true)}>
+        <Text style={styles.text}>+ New Character</Text>
+      </Pressable>
     </View>
   );
 };

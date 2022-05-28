@@ -1,8 +1,10 @@
 import React, {useState, useContext} from 'react';
-import {View, Text, TextInput, Button} from 'react-native';
+import {View, Text, TextInput, Pressable} from 'react-native';
 
 import {postLogin} from '../adapters/usersAdapter';
 import {UserContext} from '../contexts/userContext';
+
+import styles from '../styles/views/Login.Styles';
 
 const Login = ({navigation}) => {
   const [password, onChangePassword] = useState('');
@@ -19,16 +21,30 @@ const Login = ({navigation}) => {
   };
 
   return (
-    <View>
-      <Text>Username or Email:</Text>
-      <TextInput value={login} onChangeText={onChangeLogin} />
-      <Text>Password</Text>
-      <TextInput value={password} onChangeText={onChangePassword} />
-      <Button title="Login" onPress={async () => await handleLogin()} />
-      <Button
-        title="Create an account"
-        onPress={() => navigation.navigate('Register')}
+    <View style={styles.container}>
+      <Text style={styles.text}>Username or Email:</Text>
+      <TextInput
+        style={styles.input}
+        value={login}
+        onChangeText={onChangeLogin}
       />
+      <Text style={{...styles.text, marginTop: 40}}>Password:</Text>
+      <TextInput
+        style={styles.input}
+        value={password}
+        onChangeText={onChangePassword}
+        secureTextEntry={true}
+      />
+      <Pressable
+        style={styles.buttonAccent}
+        onPress={async () => await handleLogin()}>
+        <Text style={styles.text}>Login</Text>
+      </Pressable>
+      <Pressable
+        style={styles.buttonDark}
+        onPress={() => navigation.navigate('Register')}>
+        <Text style={styles.text}>Create an account</Text>
+      </Pressable>
     </View>
   );
 };
