@@ -9,6 +9,7 @@
 import React, {useState} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {setJSExceptionHandler} from 'react-native-exception-handler';
 
 import {CharacterContext} from './src/contexts/characterContext.js';
 import {UserContext} from './src/contexts/userContext.js';
@@ -19,6 +20,10 @@ import Register from './src/views/Register.js';
 import CharacterSelect from './src/views/CharacterSelect.js';
 import Skills from './src/views/Skills.js';
 import NonCombatSkill from './src/components/NonCombatSkill.js';
+
+import {jsErrorHandler} from './src/services/errorService.js';
+
+setJSExceptionHandler(jsErrorHandler, true);
 
 const App = props => {
   const Stack = createNativeStackNavigator();
